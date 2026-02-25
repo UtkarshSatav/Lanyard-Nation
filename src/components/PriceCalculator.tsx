@@ -10,41 +10,41 @@ export function PriceCalculator() {
   // Price calculation logic
   const calculatePrice = () => {
     let basePrice = 0;
-    
+
     // Base price by product type
     const productPrices: { [key: string]: number } = {
-      'lanyard': 0.30,
-      'wristband': 0.25,
-      'silicone': 0.25,
-      'id-holder': 0.50,
-      'plain': 0.20,
-      'eco': 0.40
+      'lanyard': 35.50,
+      'wristband': 15.25,
+      'silicone': 12.50,
+      'id-holder': 25.50,
+      'plain': 20.00,
+      'eco': 45.40
     };
-    
-    basePrice = productPrices[productType] || 0.30;
-    
+
+    basePrice = productPrices[productType] || 35.50;
+
     // Print type adjustment
     const printMultipliers: { [key: string]: number } = {
       'screen': 1,
       'sublimation': 1.2,
       'woven': 1.5
     };
-    
+
     basePrice *= printMultipliers[printType] || 1;
-    
+
     // Accessories
-    const accessoryPrice = accessories.length * 0.10;
-    
+    const accessoryPrice = accessories.length * 5.50;
+
     // Quantity discounts
     let discount = 1;
-    if (quantity >= 5000) discount = 0.70; // 30% off
-    else if (quantity >= 2000) discount = 0.80; // 20% off
-    else if (quantity >= 1000) discount = 0.85; // 15% off
-    else if (quantity >= 500) discount = 0.90; // 10% off
-    
+    if (quantity >= 5000) discount = 0.40; // 60% off
+    else if (quantity >= 2000) discount = 0.50; // 50% off
+    else if (quantity >= 1000) discount = 0.60; // 40% off
+    else if (quantity >= 500) discount = 0.70; // 30% off
+
     const total = (basePrice + accessoryPrice) * quantity * discount;
     const unitPrice = (basePrice + accessoryPrice) * discount;
-    
+
     return {
       unitPrice: unitPrice.toFixed(2),
       total: total.toFixed(2),
@@ -55,244 +55,169 @@ export function PriceCalculator() {
   const price = calculatePrice();
 
   const handleAccessoryToggle = (accessory: string) => {
-    setAccessories(prev => 
-      prev.includes(accessory) 
+    setAccessories(prev =>
+      prev.includes(accessory)
         ? prev.filter(a => a !== accessory)
         : [...prev, accessory]
     );
   };
 
   return (
-    <section id="quote" className="py-20 bg-gradient-to-br from-[#0F2E4D] to-[#2D7F88]">
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full mb-4">
-            <Calculator className="w-5 h-5 text-[#6EB5B7]" />
-            <span className="text-white font-semibold">Price Estimator</span>
-          </div>
-          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
-            Get Your Instant Quote
-          </h2>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Transparent pricing with no hidden fees. See exactly what you'll pay.
-          </p>
-        </div>
+    <section id="quote" className="py-24 bg-background relative overflow-hidden">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="flex flex-col lg:flex-row gap-16 items-start">
 
-        {/* Calculator Card */}
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-          <div className="grid lg:grid-cols-2">
-            {/* Left Side - Configuration */}
-            <div className="p-8 lg:p-12 space-y-8">
-              <h3 className="text-2xl font-bold text-[#0F2E4D] mb-6">
-                Configure Your Order
-              </h3>
-
-              {/* Quantity Slider */}
-              <div>
-                <label className="block text-sm font-semibold text-[#0F2E4D] mb-3">
-                  Quantity: <span className="text-[#2D7F88]">{quantity}</span>
-                </label>
-                <input 
-                  type="range"
-                  min="100"
-                  max="10000"
-                  step="100"
-                  value={quantity}
-                  onChange={(e) => setQuantity(Number(e.target.value))}
-                  className="w-full h-3 bg-[#F7F9FB] rounded-lg appearance-none cursor-pointer accent-[#2D7F88]"
-                />
-                <div className="flex justify-between text-xs text-[#5A5A5A] mt-2">
-                  <span>100</span>
-                  <span>5,000</span>
-                  <span>10,000</span>
-                </div>
+          {/* Left: Info Section */}
+          <div className="lg:w-1/3 space-y-8">
+            <div>
+              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
+                <span className="material-symbols-outlined text-primary text-3xl font-bold">calculate</span>
               </div>
-
-              {/* Product Type */}
-              <div>
-                <label className="block text-sm font-semibold text-[#0F2E4D] mb-3">
-                  Product Type
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  {[
-                    { value: 'lanyard', label: 'Custom Lanyard' },
-                    { value: 'wristband', label: 'Festival Band' },
-                    { value: 'silicone', label: 'Silicone Band' },
-                    { value: 'id-holder', label: 'ID Holder' },
-                    { value: 'plain', label: 'Plain Lanyard' },
-                    { value: 'eco', label: 'Eco Collection' }
-                  ].map(option => (
-                    <button
-                      key={option.value}
-                      onClick={() => setProductType(option.value)}
-                      className={`p-3 rounded-lg border-2 transition-all duration-300 font-medium ${
-                        productType === option.value
-                          ? 'border-[#2D7F88] bg-[#2D7F88] text-white'
-                          : 'border-gray-200 bg-white text-[#5A5A5A] hover:border-[#2D7F88]'
-                      }`}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Print Type */}
-              <div>
-                <label className="block text-sm font-semibold text-[#0F2E4D] mb-3">
-                  Print Method
-                </label>
-                <div className="space-y-2">
-                  {[
-                    { value: 'screen', label: 'Screen Print', desc: 'Standard quality' },
-                    { value: 'sublimation', label: 'Sublimation', desc: 'High quality colors' },
-                    { value: 'woven', label: 'Woven', desc: 'Premium finish' }
-                  ].map(option => (
-                    <button
-                      key={option.value}
-                      onClick={() => setPrintType(option.value)}
-                      className={`w-full p-4 rounded-lg border-2 transition-all duration-300 text-left ${
-                        printType === option.value
-                          ? 'border-[#2D7F88] bg-[#F7F9FB]'
-                          : 'border-gray-200 bg-white hover:border-[#2D7F88]'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-semibold text-[#0F2E4D]">{option.label}</div>
-                          <div className="text-sm text-[#5A5A5A]">{option.desc}</div>
-                        </div>
-                        {printType === option.value && (
-                          <Check className="w-5 h-5 text-[#2D7F88]" />
-                        )}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Accessories */}
-              <div>
-                <label className="block text-sm font-semibold text-[#0F2E4D] mb-3">
-                  Add Accessories (+£0.10 each)
-                </label>
-                <div className="space-y-2">
-                  {[
-                    { value: 'safety-break', label: 'Safety Breakaway' },
-                    { value: 'badge-reel', label: 'Badge Reel' },
-                    { value: 'key-ring', label: 'Key Ring' },
-                    { value: 'phone-loop', label: 'Phone Loop' }
-                  ].map(option => (
-                    <button
-                      key={option.value}
-                      onClick={() => handleAccessoryToggle(option.value)}
-                      className={`w-full p-3 rounded-lg border-2 transition-all duration-300 text-left flex items-center gap-3 ${
-                        accessories.includes(option.value)
-                          ? 'border-[#2D7F88] bg-[#F7F9FB]'
-                          : 'border-gray-200 bg-white hover:border-[#2D7F88]'
-                      }`}
-                    >
-                      <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
-                        accessories.includes(option.value)
-                          ? 'border-[#2D7F88] bg-[#2D7F88]'
-                          : 'border-gray-300'
-                      }`}>
-                        {accessories.includes(option.value) && (
-                          <Check className="w-4 h-4 text-white" />
-                        )}
-                      </div>
-                      <span className="font-medium text-[#0F2E4D]">{option.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <h2 className="text-4xl lg:text-5xl font-black text-navy-custom dark:text-white leading-tight mb-4 uppercase">
+                Instant <br /><span className="text-primary italic">Pricing</span> Engine
+              </h2>
+              <p className="text-lg text-slate-500 font-medium">
+                Our proprietary algorithm calculates the best bulk rates in real-time. No emails, no waiting—just instant transparency.
+              </p>
             </div>
 
-            {/* Right Side - Price Summary */}
-            <div className="bg-[#F7F9FB] p-8 lg:p-12 flex flex-col">
-              <h3 className="text-2xl font-bold text-[#0F2E4D] mb-8">
-                Price Summary
-              </h3>
+            <div className="space-y-4">
+              {[
+                { icon: 'task_alt', title: 'Zero Set-up Fees', desc: 'No hidden costs for custom plates' },
+                { icon: 'speed', title: 'Rush Production', desc: '48h turnaround available' },
+                { icon: 'workspace_premium', title: 'Tiered Savings', desc: 'Higher volume = Higher margin' }
+              ].map((item, idx) => (
+                <div key={idx} className="flex gap-4 p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
+                  <span className="material-symbols-outlined text-primary">{item.icon}</span>
+                  <div>
+                    <h4 className="font-bold text-navy-custom dark:text-white text-sm uppercase tracking-wider">{item.title}</h4>
+                    <p className="text-xs text-slate-400 font-medium">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-              <div className="space-y-6 flex-1">
+          {/* Right: Calculator UI */}
+          <div className="lg:w-2/3 w-full">
+            <div className="bg-white dark:bg-slate-800 rounded-[32px] shadow-2xl shadow-navy-custom/10 border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col md:flex-row">
+
+              {/* Configuration Panel */}
+              <div className="md:w-3/5 p-8 lg:p-12 space-y-8 border-r border-slate-100 dark:border-slate-700">
                 {/* Quantity */}
-                <div className="flex justify-between items-center pb-4 border-b border-gray-300">
-                  <span className="text-[#5A5A5A]">Quantity</span>
-                  <span className="font-semibold text-[#0F2E4D]">{quantity} units</span>
-                </div>
-
-                {/* Unit Price */}
-                <div className="flex justify-between items-center pb-4 border-b border-gray-300">
-                  <span className="text-[#5A5A5A]">Price per unit</span>
-                  <span className="font-semibold text-[#0F2E4D]">£{price.unitPrice}</span>
-                </div>
-
-                {/* Discount */}
-                {price.discount > 0 && (
-                  <div className="flex justify-between items-center pb-4 border-b border-gray-300">
-                    <span className="text-[#5A5A5A]">Bulk Discount</span>
-                    <span className="font-semibold text-[#FF8C42]">{price.discount}% OFF</span>
+                <div>
+                  <div className="flex justify-between items-end mb-4">
+                    <label className="text-xs font-black text-slate-500 uppercase tracking-widest">Order Quantity</label>
+                    <span className="text-3xl font-black text-primary">{quantity}<span className="text-sm font-bold text-slate-300 ml-1">UNITS</span></span>
                   </div>
-                )}
-
-                {/* Total */}
-                <div className="bg-white rounded-2xl p-6 shadow-lg">
-                  <div className="text-sm text-[#5A5A5A] mb-2">Estimated Total</div>
-                  <div className="text-5xl font-bold text-[#2D7F88] mb-4">
-                    £{price.total}
-                  </div>
-                  <div className="text-sm text-[#5A5A5A]">
-                    Including VAT • Free Shipping over £500
+                  <input
+                    type="range"
+                    min="100"
+                    max="10000"
+                    step="100"
+                    value={quantity}
+                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary"
+                  />
+                  <div className="flex justify-between text-[10px] font-bold text-slate-300 mt-2 uppercase tracking-tighter">
+                    <span>100 Units</span>
+                    <span>10,000 Units</span>
                   </div>
                 </div>
 
-                {/* Features */}
-                <div className="space-y-3">
-                  {[
-                    'Free Design Assistance',
-                    'Quality Guarantee',
-                    'Fast Turnaround',
-                    'No Hidden Fees'
-                  ].map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <Check className="w-5 h-5 text-[#2D7F88] flex-shrink-0" />
-                      <span className="text-sm text-[#5A5A5A]">{feature}</span>
+                {/* Product Type */}
+                <div>
+                  <label className="text-xs font-black text-slate-500 uppercase tracking-widest block mb-4">Select Category</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { id: 'lanyard', label: 'Premium Lanyard' },
+                      { id: 'wristband', label: 'Festival Band' },
+                      { id: 'silicone', label: 'Silicone Band' },
+                      { id: 'eco', label: 'Eco-Friendly' }
+                    ].map(type => (
+                      <button
+                        key={type.id}
+                        onClick={() => setProductType(type.id)}
+                        className={`py-3 px-4 rounded-xl font-bold text-sm transition-all border-2 ${productType === type.id
+                          ? 'border-primary bg-primary/5 text-primary'
+                          : 'border-slate-50 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-400'
+                          }`}
+                      >
+                        {type.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Print Method */}
+                <div>
+                  <label className="text-xs font-black text-slate-500 uppercase tracking-widest block mb-4">Branding Method</label>
+                  <div className="space-y-2">
+                    {[
+                      { id: 'screen', label: 'Single Color Screen Print', desc: 'Best for simple logos' },
+                      { id: 'sublimation', label: 'Full Color Sublimation', desc: 'Edge-to-edge gradients' },
+                      { id: 'woven', label: 'Woven Jacquard', desc: 'Premium textured finish' }
+                    ].map(method => (
+                      <button
+                        key={method.id}
+                        onClick={() => setPrintType(method.id)}
+                        className={`w-full p-4 rounded-xl text-left border-2 transition-all flex items-center justify-between ${printType === method.id
+                          ? 'border-primary bg-primary/5'
+                          : 'border-slate-50 dark:border-slate-900 bg-slate-50 dark:bg-slate-900'
+                          }`}
+                      >
+                        <div>
+                          <p className={`font-black uppercase text-sm ${printType === method.id ? 'text-primary' : 'text-navy-custom dark:text-slate-300'}`}>{method.label}</p>
+                          <p className="text-[10px] text-slate-400 font-bold tracking-wider">{method.desc}</p>
+                        </div>
+                        {printType === method.id && <span className="material-symbols-outlined text-primary">check_circle</span>}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Live Quote Panel */}
+              <div className="md:w-2/5 p-8 lg:p-12 bg-navy-custom text-white flex flex-col justify-between relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-[60px]"></div>
+
+                <div className="space-y-8 relative z-10">
+                  <h3 className="text-xl font-black uppercase tracking-widest text-primary">Live Estimate</h3>
+
+                  <div className="space-y-4">
+                    <div className="flex justify-between text-xs font-bold text-slate-400">
+                      <span>BASE UNIT PRICE</span>
+                      <span>₹{(parseFloat(price.unitPrice) / (1 - price.discount / 100)).toFixed(2)}</span>
                     </div>
-                  ))}
+                    <div className="flex justify-between text-xs font-bold text-primary">
+                      <span>BULK DISCOUNT</span>
+                      <span>-{price.discount}%</span>
+                    </div>
+                    <div className="h-px bg-white/10"></div>
+                    <div>
+                      <p className="text-[10px] font-black tracking-widest text-slate-400 mb-1">FINAL UNIT COST</p>
+                      <p className="text-4xl font-black">₹{price.unitPrice}</p>
+                    </div>
+                  </div>
+
+                  <div className="bg-white/5 rounded-2xl p-6 border border-white/10 backdrop-blur-sm">
+                    <p className="text-[10px] font-black tracking-widest text-primary mb-1">TOTAL QUOTE</p>
+                    <p className="text-4xl font-black">₹{parseFloat(price.total).toLocaleString()}</p>
+                    <p className="text-[10px] text-slate-400 italic mt-2">GST 18% Applicable at Checkout</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4 mt-12 relative z-10">
+                  <button className="w-full py-4 bg-primary text-white rounded-xl font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-xl shadow-primary/20">
+                    Book This Quote
+                  </button>
+                  <button className="w-full py-4 bg-white/5 text-white rounded-xl font-bold uppercase tracking-widest hover:bg-white/10 transition-all border border-white/10 text-sm">
+                    Download PDF
+                  </button>
                 </div>
               </div>
 
-              {/* CTA Buttons */}
-              <div className="space-y-3 mt-8">
-                <button className="w-full py-4 bg-[#2D7F88] text-white rounded-lg hover:bg-[#0F2E4D] transition-all duration-300 font-bold uppercase tracking-wide">
-                  Request Official Quote
-                </button>
-                <button className="w-full py-4 bg-white text-[#2D7F88] rounded-lg hover:bg-gray-50 transition-all duration-300 font-bold uppercase tracking-wide border-2 border-[#2D7F88]">
-                  Chat with Expert
-                </button>
-              </div>
             </div>
-          </div>
-        </div>
-
-        {/* Trust Badges */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12 text-center text-white">
-          <div>
-            <div className="text-3xl font-bold mb-2">48hrs</div>
-            <div className="text-sm text-white/80">Fastest Delivery</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold mb-2">100+</div>
-            <div className="text-sm text-white/80">MOQ Only</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold mb-2">30%</div>
-            <div className="text-sm text-white/80">Max Savings</div>
-          </div>
-          <div>
-            <div className="text-3xl font-bold mb-2">FREE</div>
-            <div className="text-sm text-white/80">Design Service</div>
           </div>
         </div>
       </div>

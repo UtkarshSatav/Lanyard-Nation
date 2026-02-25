@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bot, X, Send, Minimize2 } from 'lucide-react';
 
 interface Message {
   id: number;
@@ -39,10 +38,10 @@ export function AIBot() {
 
   const handleQuickAction = (value: string) => {
     const responses: { [key: string]: string } = {
-      pricing: "I can help you get an instant price quote! What type of product are you interested in?\n\n• Custom Lanyards (from £0.30)\n• Festival Wristbands (from £0.15)\n• Silicone Wristbands (from £0.25)\n• ID Card Holders (from £0.50)\n\nYou can also use our Price Calculator above for detailed estimates!",
+      pricing: "I can help you get an instant price quote! What type of product are you interested in?\n\n• Custom Lanyards (from ₹35.50)\n• Festival Wristbands (from ₹15.25)\n• Silicone Wristbands (from ₹12.50)\n• ID Card Holders (from ₹25.50)\n\nYou can also use our Price Calculator above for detailed estimates!",
       design: "Our design team is here to help! 🎨\n\nWe offer:\n✓ Free design proofs\n✓ Logo upload & vectorization\n✓ Custom color matching\n✓ Layout suggestions\n\nWould you like to upload your logo or speak with a designer?",
       track: "To track your order, I'll need your order number. It should look like: LN-12345\n\nAlternatively, you can track orders using the email address you used during checkout.\n\nWhat's your order number?",
-      faq: "Here are our most common questions:\n\n❓ What's your minimum order? 100 units\n⏱️ How fast can you deliver? 2-5 business days\n💳 What payment methods? All major cards + PayPal\n🌍 Where do you ship? UK, EU, and worldwide\n\nWhat else would you like to know?"
+      faq: "Here are our most common questions:\n\n❓ What's your minimum order? 100 units\n⏱️ How fast can you deliver? 2-5 business days\n💳 What payment methods? All major cards + UPI/PayPal\n🌍 Where do you ship? Pan India and Worldwide\n\nWhat else would you like to know?"
     };
 
     addUserMessage(quickActions.find(a => a.value === value)?.label || '');
@@ -89,7 +88,7 @@ export function AIBot() {
       } else if (lowerInput.includes('order') || lowerInput.includes('track')) {
         response = "To track your order, click '📦 Track Order' above and enter your order number. You can also check your email for tracking updates!";
       } else if (lowerInput.includes('time') || lowerInput.includes('fast') || lowerInput.includes('delivery')) {
-        response = "Our standard turnaround is 2-5 business days. Rush orders are available for faster delivery. Shipping is free on orders over £500!";
+        response = "Our standard turnaround is 2-5 business days. Rush orders are available for faster delivery. Shipping is free on orders over ₹25,000!";
       }
 
       addBotMessage(response);
@@ -100,93 +99,91 @@ export function AIBot() {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-24 right-8 z-40 w-14 h-14 bg-gradient-to-br from-[#2D7F88] to-[#0F2E4D] rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-all duration-300"
+        className="fixed bottom-24 right-8 z-40 w-16 h-14 bg-navy rounded-2xl flex items-center justify-center shadow-xl hover:scale-110 transition-all duration-300 border border-primary/20"
       >
-        <Bot className="w-7 h-7 text-white" />
-        <div className="absolute -top-1 -right-1 w-6 h-6 bg-[#FF8C42] rounded-full flex items-center justify-center">
-          <span className="text-white text-xs font-bold">AI</span>
+        <span className="material-symbols-outlined text-primary text-3xl font-bold">smart_toy</span>
+        <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-lg flex items-center justify-center border-4 border-navy shadow-lg">
+          <span className="text-white text-[8px] font-black uppercase">AI</span>
         </div>
       </button>
     );
   }
 
   return (
-    <div className={`fixed z-40 transition-all duration-300 ${
-      isMinimized 
-        ? 'bottom-6 right-24 w-64'
-        : 'bottom-6 right-6 w-96'
-    }`}>
+    <div className={`fixed z-40 transition-all duration-500 ${isMinimized
+      ? 'bottom-24 right-24 w-72 translate-y-2'
+      : 'bottom-8 right-8 w-96'
+      }`}>
       {isMinimized ? (
         // Minimized View
         <button
           onClick={() => setIsMinimized(false)}
-          className="w-full bg-gradient-to-br from-[#2D7F88] to-[#0F2E4D] text-white p-4 rounded-2xl shadow-2xl flex items-center justify-between hover:shadow-3xl transition-all"
+          className="w-full bg-navy text-white p-5 rounded-2xl shadow-2xl flex items-center justify-between hover:scale-105 transition-all border border-primary/20"
         >
-          <div className="flex items-center gap-3">
-            <Bot className="w-6 h-6" />
-            <span className="font-bold">LN Smart Assistant</span>
+          <div className="flex items-center gap-4">
+            <span className="material-symbols-outlined text-primary">smart_toy</span>
+            <span className="font-black uppercase tracking-widest text-[10px]">Smart Assistant</span>
           </div>
           <div className="flex gap-2">
-            <div className="w-2 h-2 bg-[#6EB5B7] rounded-full animate-pulse"></div>
+            <div className="w-2 h-2 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(45,127,136,0.8)]"></div>
           </div>
         </button>
       ) : (
         // Full View
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col" style={{ height: '600px' }}>
+        <div className="bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl overflow-hidden flex flex-col border border-slate-100 dark:border-slate-800" style={{ height: '640px' }}>
           {/* Header */}
-          <div className="bg-gradient-to-br from-[#2D7F88] to-[#0F2E4D] text-white p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                <Bot className="w-6 h-6" />
+          <div className="bg-navy text-white p-6 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shadow-inner">
+                <span className="material-symbols-outlined text-primary text-2xl font-bold">smart_toy</span>
               </div>
               <div>
-                <div className="font-bold">LN Smart Assistant</div>
-                <div className="text-xs text-white/80 flex items-center gap-2">
-                  <div className="w-2 h-2 bg-[#6EB5B7] rounded-full animate-pulse"></div>
-                  Online
+                <div className="font-black uppercase tracking-widest text-xs">LN AI Agent</div>
+                <div className="text-[10px] font-bold text-slate-400 flex items-center gap-2 uppercase">
+                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                  Neural Link Active
                 </div>
               </div>
             </div>
             <div className="flex gap-2">
-              <button 
+              <button
                 onClick={() => setIsMinimized(true)}
-                className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                className="w-8 h-8 rounded-xl hover:bg-white/10 transition-colors flex items-center justify-center"
               >
-                <Minimize2 className="w-4 h-4" />
+                <span className="material-symbols-outlined text-sm">remove</span>
               </button>
-              <button 
+              <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+                className="w-8 h-8 rounded-xl hover:bg-white/10 transition-colors flex items-center justify-center"
               >
-                <X className="w-4 h-4" />
+                <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#F7F9FB]">
+          <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50 dark:bg-slate-950 no-scrollbar">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <div className={`flex gap-2 max-w-[80%] ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                <div className={`flex gap-3 max-w-[85%] ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                   {message.sender === 'bot' && (
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#2D7F88] to-[#0F2E4D] flex items-center justify-center flex-shrink-0">
-                      <Bot className="w-5 h-5 text-white" />
+                    <div className="w-10 h-10 rounded-xl bg-navy flex items-center justify-center flex-shrink-0 shadow-lg">
+                      <span className="material-symbols-outlined text-primary text-xl">smart_toy</span>
                     </div>
                   )}
-                  <div>
+                  <div className={message.sender === 'user' ? 'text-right' : 'text-left'}>
                     <div
-                      className={`rounded-2xl p-3 ${
-                        message.sender === 'user'
-                          ? 'bg-[#2D7F88] text-white rounded-br-none'
-                          : 'bg-white text-gray-800 rounded-bl-none shadow-sm'
-                      }`}
+                      className={`p-4 rounded-[24px] shadow-sm font-medium text-sm leading-relaxed ${message.sender === 'user'
+                        ? 'bg-primary text-white rounded-tr-none'
+                        : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 rounded-tl-none border border-slate-100 dark:border-slate-800'
+                        }`}
                     >
-                      <p className="text-sm whitespace-pre-line">{message.text}</p>
+                      <p className="whitespace-pre-line">{message.text}</p>
                     </div>
-                    <span className="text-xs text-gray-400 mt-1 block px-1">
+                    <span className="text-[10px] font-black text-slate-400 mt-2 block uppercase tracking-widest px-1">
                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
@@ -198,14 +195,13 @@ export function AIBot() {
 
           {/* Quick Actions */}
           {messages.length <= 2 && (
-            <div className="px-4 py-3 bg-white border-t border-gray-200">
-              <div className="text-xs text-gray-500 mb-2 font-semibold">Quick Actions:</div>
-              <div className="grid grid-cols-2 gap-2">
+            <div className="px-6 py-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
+              <div className="grid grid-cols-2 gap-3">
                 {quickActions.map((action, index) => (
                   <button
                     key={index}
                     onClick={() => handleQuickAction(action.value)}
-                    className="p-2 text-xs bg-[#F7F9FB] hover:bg-[#2D7F88] hover:text-white rounded-lg transition-all duration-300 border border-gray-200 font-medium"
+                    className="p-3 text-[10px] bg-slate-50 dark:bg-slate-950 hover:bg-primary hover:text-white rounded-xl transition-all duration-300 border border-slate-100 dark:border-slate-800 font-black uppercase tracking-widest flex items-center justify-center text-navy dark:text-slate-300"
                   >
                     {action.label}
                   </button>
@@ -215,21 +211,21 @@ export function AIBot() {
           )}
 
           {/* Input */}
-          <div className="p-4 bg-white border-t border-gray-200">
-            <div className="flex gap-2">
+          <div className="p-6 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex gap-3">
               <input
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                placeholder="Type your message..."
-                className="flex-1 px-4 py-3 bg-[#F7F9FB] border border-gray-200 rounded-xl focus:outline-none focus:border-[#2D7F88] text-sm"
+                placeholder="Inquire about bulk pricing..."
+                className="flex-1 px-5 py-4 bg-slate-50 dark:bg-slate-950 border-none rounded-2xl focus:ring-2 focus:ring-primary/50 text-sm font-medium placeholder:text-slate-400 dark:text-white"
               />
               <button
                 onClick={handleSendMessage}
-                className="px-4 py-3 bg-[#2D7F88] text-white rounded-xl hover:bg-[#0F2E4D] transition-all duration-300"
+                className="w-14 h-14 bg-primary text-white rounded-2xl hover:brightness-105 transition-all flex items-center justify-center shadow-lg shadow-primary/20"
               >
-                <Send className="w-5 h-5" />
+                <span className="material-symbols-outlined font-bold">send</span>
               </button>
             </div>
           </div>

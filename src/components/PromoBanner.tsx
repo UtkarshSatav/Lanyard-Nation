@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Megaphone, X } from 'lucide-react';
 import { getSiteContent } from '../firebase/advancedServices';
 
 export const PromoBanner = () => {
@@ -21,7 +20,7 @@ export const PromoBanner = () => {
     return (
         <div className="bg-[#0F2E4D] text-white py-2 relative overflow-hidden transition-all animate-in slide-in-from-top duration-500">
             <div className="max-w-[1400px] mx-auto px-4 flex items-center justify-center gap-3">
-                <Megaphone className="w-4 h-4 text-amber-400 animate-bounce" />
+                <span className="material-symbols-outlined text-amber-400 text-sm animate-bounce">campaign</span>
                 <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em]">
                     {banner.text}
                     {banner.link && (
@@ -32,9 +31,9 @@ export const PromoBanner = () => {
                 </p>
                 <button
                     onClick={() => setIsVisible(false)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-white/10 rounded-full"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-white/10 rounded-full flex items-center justify-center"
                 >
-                    <X className="w-3 h-3" />
+                    <span className="material-symbols-outlined text-sm">close</span>
                 </button>
             </div>
             {/* Background Texture Overlay */}

@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ChevronDown, Grid, List, SlidersHorizontal, ShoppingCart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { CartButton } from '../components/CartButton';
 import { toast } from 'sonner';
@@ -247,312 +246,230 @@ export function ProductCatalogPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center pt-24">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2D7F88]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white pt-24">
-      {/* Search Bar Section */}
-      <div className="bg-[#F7F9FB] py-8 border-b border-gray-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4">
-            <div className="flex-1 max-w-3xl">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+    <div className="min-h-screen bg-background pt-24">
+      <main className="flex flex-1 justify-center py-8">
+        <div className="layout-content-container flex flex-col max-w-[1200px] flex-1 px-4 md:px-10">
+          {/* Search Bar Section */}
+          <div className="mb-8">
+            <label className="flex flex-col w-full">
+              <div className="flex w-full items-stretch rounded-xl h-14 bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700">
+                <div className="text-slate-400 flex items-center justify-center pl-4">
+                  <span className="material-symbols-outlined">search</span>
+                </div>
                 <input
                   type="text"
-                  placeholder="Enter your search key"
+                  placeholder="Search custom lanyards, wristbands, and branding accessories..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-32 py-4 border-2 border-gray-200 rounded-lg focus:border-[#2D7F88] focus:outline-none text-lg"
+                  className="flex w-full min-w-0 flex-1 border-none bg-transparent focus:outline-0 focus:ring-0 text-slate-900 dark:text-white px-4 text-base font-normal placeholder:text-slate-400"
                 />
-                <button className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-[#2D7F88] text-white rounded-lg hover:bg-[#0F2E4D] transition-colors">
-                  Search
-                </button>
+                <div className="p-2">
+                  <button className="h-full px-6 bg-primary text-white font-bold rounded-lg hover:brightness-105 transition-all">
+                    Search
+                  </button>
+                </div>
               </div>
-            </div>
-            <CartButton />
+            </label>
           </div>
-        </div>
-      </div>
 
-      {/* Category Navigation with Mega Menu */}
-      <div className="bg-white border-b border-gray-200 sticky top-20 z-40 ">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center ">
+          {/* Category Navigation */}
+          <div className="flex gap-3 pb-6 overflow-x-auto no-scrollbar border-b border-slate-200 dark:border-slate-800">
             {productCategories.map((category) => (
-              <div
+              <button
                 key={category.id}
-                className="relative"
-                onMouseEnter={() => category.subcategories.length > 0 && handleMouseEnter(category.id)}
-                onMouseLeave={handleMouseLeave}
+                onClick={() => setSelectedCategory(category.id)}
+                className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full px-6 font-medium text-sm transition-all ${selectedCategory === category.id
+                  ? 'bg-primary text-white'
+                  : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-primary'
+                  }`}
               >
-                <button
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`flex items-center gap-2 px-4 py-4 whitespace-nowrap font-medium transition-colors ${selectedCategory === category.id
-                    ? 'text-[#2D7F88] border-b-2 border-[#2D7F88]'
-                    : 'text-[#0F2E4D] hover:text-[#2D7F88]'
-                    }`}
-                >
-                  {category.name}
-                  {category.subcategories.length > 0 && (
-                    <ChevronDown className="w-4 h-4" />
-                  )}
-                </button>
-
-                {/* Mega Menu Dropdown */}
-                {activeCategory === category.id && category.subcategories.length > 0 && (
-                  <div
-                    className="absolute top-full left-0 bg-white shadow-2xl border border-gray-200 rounded-lg mt-0 min-w-[300px] z-50 overflow-hidden"
-                    onMouseEnter={() => handleMouseEnter(category.id)}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    <div className="p-4 grid grid-cols-1 gap-2">
-                      {category.subcategories.map((sub) => (
-                        <Link
-                          key={sub.id}
-                          to={`/products/${sub.slug}`}
-                          className="px-4 py-2 text-[#0F2E4D] hover:bg-[#F7F9FB] hover:text-[#2D7F88] rounded-lg transition-colors"
-                        >
-                          {sub.name}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+                {category.name}
+              </button>
             ))}
           </div>
-        </div>
-      </div>
 
-      {/* All Categories Mega Menu */}
-      {activeCategory === 'all-products' && (
-        <div
-          className="bg-white shadow-2xl border-t border-gray-200 z-60 "
-          onMouseEnter={() => handleMouseEnter('all-products')}
-          onMouseLeave={handleMouseLeave}
+          <div className="flex items-center justify-between py-6">
+            <div className="flex items-baseline gap-2">
+              <h2 className="text-navy-custom dark:text-white text-2xl font-bold">Bulk Inventory</h2>
+              <p className="text-slate-500 text-sm">Showing {filteredProducts.length} premium products</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <div
+                className="flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer"
+                onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
+              >
+                <span className="material-symbols-outlined text-sm">
+                  {viewMode === 'grid' ? 'view_list' : 'grid_view'}
+                </span>
+                <span className="text-navy-custom dark:text-white text-sm font-semibold capitalize">{viewMode} View</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white dark:bg-slate-800 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer">
+                <span className="text-slate-500 text-sm">Sort by:</span>
+                <span className="text-navy-custom dark:text-white text-sm font-semibold">Featured</span>
+                <span className="material-symbols-outlined text-sm">expand_more</span>
+              </div>
+            </div>
+          </div>
 
-        >
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8" >
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-8 gap-y-4">
-              {allSubcategories.map((sub) => (
-                <Link
-                  key={sub.slug}
-                  to={`/products/${sub.slug}`}
-                  className="text-[#0F2E4D] hover:text-[#2D7F88] transition-colors text-sm"
+          {/* Products Grid/List */}
+          {viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className="flex flex-col group bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-xl transition-all"
                 >
-                  {sub.name}
-                </Link>
+                  <Link to={`/product/${product.id}`}>
+                    <div className="relative aspect-square bg-slate-100 dark:bg-slate-900 flex items-center justify-center p-8 overflow-hidden">
+                      <ImageWithFallback
+                        src={product.image}
+                        alt={product.name}
+                        className="object-contain w-full h-full group-hover:scale-105 transition-transform duration-500"
+                      />
+                      {!product.inStock && (
+                        <>
+                          <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-md z-10">
+                            Out of Stock
+                          </div>
+                          <div className="absolute inset-0 bg-white/40 dark:bg-black/40 backdrop-blur-[1px]"></div>
+                        </>
+                      )}
+                      <div className="absolute top-4 right-4 bg-white/90 dark:bg-slate-800/90 p-2 rounded-full shadow-md">
+                        <span className="material-symbols-outlined text-slate-400 group-hover:text-red-500 transition-colors">favorite</span>
+                      </div>
+                    </div>
+                  </Link>
+                  <div className="p-6 flex flex-col gap-3">
+                    <div className="flex items-center gap-1 text-yellow-400">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <span key={i} className={`material-symbols-outlined text-sm ${i < (product.rating || 5) ? 'fill-current' : ''}`}>
+                          {i < (product.rating || 5) ? 'star' : 'star'}
+                        </span>
+                      ))}
+                      <span className="text-slate-400 text-xs ml-1">({product.reviews || 0})</span>
+                    </div>
+                    <Link to={`/product/${product.id}`}>
+                      <h3 className="text-navy-custom dark:text-white font-bold text-lg leading-snug hover:text-primary transition-colors">
+                        {product.name}
+                      </h3>
+                    </Link>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-primary font-bold text-xl">
+                        ₹{product.price} <span className="text-xs text-slate-400 font-normal">/ unit</span>
+                      </span>
+                      <button
+                        onClick={(e) => handleAddToCart(product, e)}
+                        disabled={!product.inStock}
+                        className={`rounded-lg px-4 py-2 text-sm font-bold flex items-center gap-2 transition-all ${product.inStock
+                          ? 'bg-primary text-white hover:brightness-110'
+                          : 'bg-slate-200 dark:bg-slate-700 text-slate-500 cursor-not-allowed'
+                          }`}
+                      >
+                        <span className="material-symbols-outlined text-sm">{product.inStock ? 'add_shopping_cart' : 'block'}</span>
+                        {product.inStock ? 'Add' : 'Sold Out'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Products Section */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Filters and View Controls */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-4 py-2 border-2 border-gray-200 rounded-lg hover:border-[#2D7F88] transition-colors"
-            >
-              <SlidersHorizontal className="w-5 h-5" />
-              Filters
-            </button>
-            <div className="text-[#5A5A5A]">
-              Showing <span className="font-semibold text-[#0F2E4D]">{filteredProducts.length}</span> products
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <select className="px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-[#2D7F88] focus:outline-none">
-              <option>Sort by: Featured</option>
-              <option>Price: Low to High</option>
-              <option>Price: High to Low</option>
-              <option>Newest</option>
-              <option>Best Selling</option>
-            </select>
-
-            <div className="flex items-center gap-2 border-2 border-gray-200 rounded-lg p-1">
-              <button
-                onClick={() => setViewMode('grid')}
-                className={`p-2 rounded ${viewMode === 'grid' ? 'bg-[#2D7F88] text-white' : 'text-gray-400'}`}
-              >
-                <Grid className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setViewMode('list')}
-                className={`p-2 rounded ${viewMode === 'list' ? 'bg-[#2D7F88] text-white' : 'text-gray-400'}`}
-              >
-                <List className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Products Grid/List */}
-        {viewMode === 'grid' ? (
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                className="group bg-white rounded-xl border-2 border-gray-200 overflow-hidden hover:border-[#2D7F88] hover:shadow-xl transition-all duration-300"
-              >
-                <Link to={`/product/${product.id}`}>
-                  <div className="relative aspect-square overflow-hidden bg-gray-100">
+          ) : (
+            <div className="flex flex-col gap-6">
+              {filteredProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className="flex bg-white dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-xl transition-all"
+                >
+                  <Link to={`/product/${product.id}`} className="w-48 h-48 flex-shrink-0 bg-slate-100 dark:bg-slate-900 p-4">
                     <ImageWithFallback
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="object-contain w-full h-full hover:scale-105 transition-transform duration-500"
                     />
-                    {!product.inStock && (
-                      <div className="absolute top-4 right-4 px-3 py-1 bg-red-500 text-white text-xs font-semibold rounded-full">
-                        Out of Stock
-                      </div>
-                    )}
-                  </div>
-                </Link>
-                <div className="p-4">
-                  <Link to={`/product/${product.id}`}>
-                    <h3 className="font-bold text-[#0F2E4D] mb-2 group-hover:text-[#2D7F88] transition-colors">
-                      {product.name}
-                    </h3>
-                    <p className="text-sm text-[#5A5A5A] mb-3 line-clamp-2">
-                      {product.description}
-                    </p>
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="flex items-center gap-1">
+                  </Link>
+                  <div className="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-1 text-yellow-400 mb-2">
                         {Array.from({ length: 5 }).map((_, i) => (
-                          <span
-                            key={i}
-                            className={`text-sm ${i < (product.rating || 5) ? 'text-[#FF8C42]' : 'text-gray-300'}`}
-                          >
-                            ★
+                          <span key={i} className={`material-symbols-outlined text-sm ${i < (product.rating || 5) ? 'fill-current' : ''}`}>
+                            {i < (product.rating || 5) ? 'star' : 'star'}
                           </span>
                         ))}
+                        <span className="text-slate-400 text-xs ml-1">({product.reviews || 0})</span>
                       </div>
-                      <span className="text-xs text-[#5A5A5A]">({product.reviews || 0})</span>
-                    </div>
-                  </Link>
-                  <div className="flex items-center justify-between gap-2">
-                    <div>
-                      <div className="text-xs text-[#5A5A5A]">Starting from</div>
-                      <div className="text-2xl font-bold text-[#2D7F88]">
-                        ₹{product.price}
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <button
-                        onClick={(e) => handleAddToCart(product, e)}
-                        className="px-3 py-2 bg-[#2D7F88] text-white rounded-lg hover:bg-[#0F2E4D] transition-colors text-sm font-semibold whitespace-nowrap flex items-center gap-1"
-                      >
-                        <ShoppingCart className="w-4 h-4" />
-                        Add to Cart
-                      </button>
-                      <Link
-                        to={`/product/${product.id}`}
-                        className="px-3 py-2 bg-[#FF8C42] text-white rounded-lg hover:bg-[#ff9d5c] transition-colors text-sm font-semibold text-center"
-                      >
-                        View Details
+                      <Link to={`/product/${product.id}`}>
+                        <h3 className="text-navy-custom dark:text-white font-bold text-xl leading-snug hover:text-primary transition-colors">
+                          {product.name}
+                        </h3>
                       </Link>
+                      <p className="text-slate-500 text-sm mt-2 line-clamp-2">{product.description}</p>
+                    </div>
+                    <div className="flex items-center justify-between mt-4">
+                      <span className="text-primary font-bold text-2xl">
+                        ₹{product.price} <span className="text-xs text-slate-400 font-normal">/ unit</span>
+                      </span>
+                      <div className="flex gap-2">
+                        <Link
+                          to={`/product/${product.id}`}
+                          className="bg-slate-100 dark:bg-slate-700 text-navy-custom dark:text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-slate-200 transition-all"
+                        >
+                          Details
+                        </Link>
+                        <button
+                          onClick={(e) => handleAddToCart(product, e)}
+                          disabled={!product.inStock}
+                          className={`rounded-lg px-6 py-2 text-sm font-bold flex items-center gap-2 transition-all ${product.inStock
+                            ? 'bg-primary text-white hover:brightness-110 shadow-lg shadow-primary/20'
+                            : 'bg-slate-200 dark:bg-slate-700 text-slate-500 cursor-not-allowed'
+                            }`}
+                        >
+                          <span className="material-symbols-outlined text-sm">{product.inStock ? 'add_shopping_cart' : 'block'}</span>
+                          {product.inStock ? 'Add to Cart' : 'Sold Out'}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                className="group bg-white rounded-xl border-2 border-gray-200 overflow-hidden hover:border-[#2D7F88] hover:shadow-xl transition-all duration-300 flex"
-              >
-                <Link to={`/product/${product.id}`} className="w-48 h-48 flex-shrink-0 overflow-hidden bg-gray-100">
-                  <ImageWithFallback
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                </Link>
-                <div className="flex-1 p-6 flex flex-col">
-                  <div className="flex-1">
-                    <Link to={`/product/${product.id}`}>
-                      <h3 className="text-xl font-bold text-[#0F2E4D] mb-2 group-hover:text-[#2D7F88] transition-colors">
-                        {product.name}
-                      </h3>
-                      <p className="text-[#5A5A5A] mb-4">
-                        {product.description}
-                      </p>
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="flex items-center gap-1">
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <span
-                              key={i}
-                              className={i < (product.rating || 5) ? 'text-[#FF8C42]' : 'text-gray-300'}
-                            >
-                              ★
-                            </span>
-                          ))}
-                        </div>
-                        <span className="text-sm text-[#5A5A5A]">({product.reviews || 0} reviews)</span>
-                      </div>
-                    </Link>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-sm text-[#5A5A5A]">Starting from</div>
-                      <div className="text-3xl font-bold text-[#2D7F88]">
-                        ₹{product.price}
-                      </div>
-                    </div>
-                    <div className="flex gap-3">
-                      <button
-                        onClick={(e) => handleAddToCart(product, e)}
-                        className="px-4 py-3 bg-[#2D7F88] text-white rounded-lg hover:bg-[#0F2E4D] transition-colors font-semibold flex items-center gap-2"
-                      >
-                        <ShoppingCart className="w-5 h-5" />
-                        Add to Cart
-                      </button>
-                      <Link
-                        to={`/product/${product.id}`}
-                        className="px-6 py-3 bg-[#FF8C42] text-white rounded-lg hover:bg-[#ff9d5c] transition-colors font-semibold"
-                      >
-                        View Details
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
 
-        {/* No Results */}
-        {filteredProducts.length === 0 && (
-          <div className="text-center py-20">
-            <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-2xl font-bold text-[#0F2E4D] mb-2">No Products Found</h3>
-            <p className="text-[#5A5A5A] mb-6">
-              Try adjusting your search or filters to find what you're looking for.
-            </p>
-            <button
-              onClick={() => {
-                setSearchQuery('');
-                setSelectedCategory('all-products');
-              }}
-              className="px-6 py-3 bg-[#2D7F88] text-white rounded-lg hover:bg-[#0F2E4D] transition-colors font-semibold"
-            >
-              Clear Filters
+          {/* No Results */}
+          {filteredProducts.length === 0 && (
+            <div className="text-center py-20 bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
+              <span className="material-symbols-outlined text-6xl text-slate-300 mb-4">search_off</span>
+              <h3 className="text-2xl font-bold text-navy-custom dark:text-white mb-2">No Products Found</h3>
+              <p className="text-slate-500 mb-6">Try adjusting your search or filters to find what you're looking for.</p>
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedCategory('all-products');
+                }}
+                className="px-8 py-3 bg-primary text-white rounded-lg hover:brightness-110 transition-all font-bold"
+              >
+                Clear Filters
+              </button>
+            </div>
+          )}
+
+          {/* New Custom Design Call to Action */}
+          <div className="mt-16 flex flex-col md:flex-row items-center justify-between bg-primary/5 dark:bg-primary/10 p-8 rounded-2xl border border-primary/20">
+            <div className="mb-6 md:mb-0">
+              <h4 className="text-navy-custom dark:text-white text-xl font-bold mb-2">Need a Custom Design?</h4>
+              <p className="text-slate-600 dark:text-slate-300">Our designers can help you create the perfect lanyard for your event.</p>
+            </div>
+            <button className="bg-navy-custom dark:bg-primary text-white px-8 py-3 rounded-full font-bold shadow-lg hover:scale-105 transition-all">
+              Start Customizing
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      </main>
     </div>
   );
 }
